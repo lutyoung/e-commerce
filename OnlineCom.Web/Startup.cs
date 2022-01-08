@@ -1,9 +1,15 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using OnlineCom.Web.Context;
+using OnlineCom.Web.Implementation.Repositories;
+using OnlineCom.Web.Implementation.Services;
+using OnlineCom.Web.Interface.IRepositories;
+using OnlineCom.Web.Interface.IServices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +29,11 @@ namespace OnlineCom.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<OnlineComContext>(options =>
+                    options.UseMySQL(Configuration.GetConnectionString("OnlineComContext")));
             services.AddControllersWithViews();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<ICategoryService, CategoryService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
